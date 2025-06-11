@@ -12,7 +12,11 @@ struct Al_FaarisaView: View {
 
     var body: some View {
         if session.user != nil {
-            OrganizerMainView()
+            if session.userRole == "Member" {
+                MemberMainView()
+            } else {
+                OrganizerMainView()
+            }
         } else {
             SignInView()
         }

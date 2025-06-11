@@ -25,7 +25,7 @@ struct SignInView: View {
                 HStack(spacing: 0) {
                     Text("Don't have an account yet? Sign up ")
                         .foregroundColor(.gray)
-                    NavigationLink(destination: OrganizerSignIn()) {
+                    NavigationLink(destination: SignUpView()) {
                         Text("here")
                             .foregroundColor(.black)
                             .fontWeight(.bold)
@@ -35,10 +35,11 @@ struct SignInView: View {
             }
             .padding()
         }
+        .tint(.black)
     }
 }
 
-extension Text {
+extension View {
     func buttonTextStyle() -> some View {
         self
             .padding()

@@ -11,6 +11,7 @@ import MapKit
 
 struct OrganizerHomeView: View {
     let bayterekCoordinate = CLLocationCoordinate2D(latitude: 51.1280, longitude: 71.4304)
+    @StateObject private var session = UserSession.shared
     
     var body: some View {
         GeometryReader { geometry in
@@ -31,17 +32,38 @@ struct OrganizerHomeView: View {
                         Color.clear.frame(height: imageHeight - 50)
 
                         // Main Info
-                        VStack {
-                            VStack(alignment: .leading, spacing: 12) {
+                        VStack (alignment: .leading, spacing: 20) {
+                            HStack {
                                 Text("Al-Faarisa")
                                     .titleTextStyle()
+                                    .padding()
+                                    .background(.white)
+                                    .cornerRadius(20)
+                                    .padding(.top)
+                                Spacer()
+                                Button(action: openInstagram) {
+                                    Image("instagram-logo")
+                                        .resizable()
+                                        .aspectRatio(1, contentMode: .fit)
+                                        .shadow(radius: 4)
+                                        .frame(maxHeight: 70)
+                                        .padding()
+                                }
+                            }
+                            VStack(alignment: .leading) {
                                 Text("Description")
-                                    .font(.subheadline)
-                                Text("Женский клуб верховой езды❤️‍🔥| Астана Сообщество свободных, смелых и сильных девушек с нами жизнь меняется и чувствуется ярче💥")
+                                    .font(.headline)
+                                Text("Women's horse riding club in Astana. A community of strong, empowered women. With us, your life changes and feels brighter🌟")
                                     .font(.body)
                                     .foregroundColor(.gray)
+                            }
+                            .padding(.horizontal)
+                            .background(.white)
+                            .cornerRadius(20)
+                            
+                            VStack(alignment: .leading) {
                                 Text("Address")
-                                    .font(.subheadline)
+                                    .font(.headline)
                                 Text("Recreational Area Ayaulym, Qoyandi, Astana, Kazakhstan")
                                     .font(.body)
                                     .foregroundColor(.gray)
@@ -53,20 +75,11 @@ struct OrganizerHomeView: View {
                                 .aspectRatio(1, contentMode: .fit)
                                 .cornerRadius(30)
                             }
-                            .padding()
-                            .padding(.top)
-                            .background(Color.white)
+                            .padding(.horizontal)
+                            .background(.white)
                             .cornerRadius(20)
                             
-//                            VStack {
-//                                Map {
-//                                    Marker("Horse Riding", coordinate: bayterekCoordinate)
-//                                        .tint(.red)
-//                                }
-//                                .mapControlVisibility(.hidden)
-//                                .aspectRatio(5, contentMode: .fit)
-//                            }
-//                            .aspectRatio(5, contentMode: .fit)
+                            signOutButton()
                         }
                         .background(.white)
                         .opacity(1)
@@ -74,6 +87,23 @@ struct OrganizerHomeView: View {
                     }
                 }
             }
+        }
+    }
+    
+    func signOutButton() -> some View {
+        Button(action: {
+            session.signOut()
+        }) {
+            Label("Sign Out", systemImage: "iphone.and.arrow.forward.outward")
+                .font(.subheadline)
+                .foregroundColor(.red)
+                .padding()
+        }
+    }
+    
+    func openInstagram() {
+        if let url = URL(string: "https://www.instagram.com/al_faarisa/") {
+            UIApplication.shared.open(url)
         }
     }
 }

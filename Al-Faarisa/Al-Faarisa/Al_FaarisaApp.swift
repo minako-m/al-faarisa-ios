@@ -22,8 +22,9 @@ struct Al_FaarisaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            //Al_FaarisaView()
-            OrganizerMainView()
+            Al_FaarisaView()
+            //OrganizerMainView()
+            //MemberEventsView()
         }
     }
 }
