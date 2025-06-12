@@ -4,6 +4,9 @@
 //
 //  Created by Amira Mahmedjan on 11.06.2025.
 //
+//  The grid layout using LazyVGrid of the calendar was created with chatGPT. The rest of the design
+//  was done by me (i.e. how dates look like based on the number of events in them, the scrollview,
+//  the fonts, the layout of front/back buttons, etc)
 
 import SwiftUI
 

@@ -76,6 +76,19 @@ struct EventView: View {
                             .cornerRadius(20)
                             .frame(maxWidth: .infinity)
                             
+                            VStack {
+                                Text("Attendees:")
+                                    .font(.headline)
+                                ForEach(event.attendees) { attendee in
+                                    Text(attendee.name)
+                                        .font(.callout)
+                                }
+                            }
+                            .padding(.horizontal)
+                            .background(.white)
+                            .cornerRadius(20)
+                            .frame(maxWidth: .infinity)
+                            
                         }
                         .background(.white)
                         .opacity(1)

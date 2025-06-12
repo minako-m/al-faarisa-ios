@@ -28,6 +28,7 @@ struct SignUpView: View {
     @State var errorMessage: String = ""
     @State var role: UserRole = .member
     @State var confirmationCode: String = ""
+    @State var userName: String = ""
     
     var body: some View {
         VStack {
@@ -41,6 +42,11 @@ struct SignUpView: View {
             }
             .pickerStyle(.segmented)
             .padding(.horizontal)
+            
+            TextField("Name", text: $userName)
+                .padding()
+                .frame(maxWidth: .infinity)
+            Divider()
             
             TextField("Email", text: $email)
                 .keyboardType(.emailAddress)
@@ -91,7 +97,7 @@ struct SignUpView: View {
             return
         }
         
-        session.signUp(email: email, password: password, role: role.title) { result in
+        session.signUp(email: email, password: password, role: role.title, name: userName) { result in
             switch result {
             case .success(()):
                 session.loadUserRole()

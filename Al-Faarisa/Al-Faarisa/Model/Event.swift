@@ -68,8 +68,4 @@ struct Event: Identifiable, Equatable, Codable {
     func isAtCapacity() -> Bool {
         attendees.count >= capacity
     }
-    
-    func addToCalendar() {
-        
-    }
 }

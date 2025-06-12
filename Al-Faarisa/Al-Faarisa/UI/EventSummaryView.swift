@@ -25,6 +25,7 @@ enum Level: String, CaseIterable, Identifiable, Equatable, Codable {
 
 struct EventSummaryView: View {
     var event: Event
+    @StateObject private var session = UserSession.shared
     
     var body: some View {
         HStack(spacing: 20) {
@@ -42,6 +43,13 @@ struct EventSummaryView: View {
                     .font(.subheadline)
                 Text("\(event.attendees.count) / \(event.capacity) seats taken")  // capacity
                     .font(.subheadline)
+            }
+            
+            if let user = session.user {
+                if session.userRole == "Member", event.attendees.contains(where: { $0.id == user.uid }) {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.green)
+                }
             }
         }
         .padding()

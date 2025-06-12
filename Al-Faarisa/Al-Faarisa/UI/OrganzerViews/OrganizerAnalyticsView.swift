@@ -4,6 +4,7 @@
 //
 //  Created by Amira Mahmedjan on 31.05.2025.
 //
+//  The chart was created with help of ChatGPT
 
 import SwiftUI
 import Charts

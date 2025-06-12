@@ -2,7 +2,8 @@
 //  WeeklyAttendance.swift
 //  Al-Faarisa
 //
-//  Created by Amira Mahmedjan on 04.06.2025.
+//  Created by chatGPT with the prompt: "make a struct that will group events by week
+//  and calculate total per week. This struct will be used in a line chart from SwiftCharts
 //
 
 import Foundation

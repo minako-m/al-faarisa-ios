@@ -2,7 +2,9 @@
 //  CalendarManager.swift
 //  Al-Faarisa
 //
-//  Created by Amira Mahmedjan on 11.06.2025.
+//  Created by ChatGPT using prompt: "create a layout that looks like DatPicker but
+//  one that I can customize". This code was the backend of a calendarUI that ChatGPT generated.
+//  It is meant to automate the calculation of number of days in a month + when a month starts
 //
 
 import Foundation

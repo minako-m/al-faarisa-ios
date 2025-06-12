@@ -4,6 +4,7 @@
 //
 //  Created by Amira Mahmedjan on 31.05.2025.
 //
+//  methods are from Firebase documentation
 
 import Foundation
 import FirebaseAuth
@@ -20,6 +21,7 @@ class UserSession: ObservableObject {
     
     @Published var user: User?
     @Published var userRole: String? = nil
+    @Published var username: String? = nil
     
     func loadUserRole() {
         fetchUserRole { role in
@@ -29,13 +31,14 @@ class UserSession: ObservableObject {
         }
     }
     
-    func signUp(email: String, password: String, role: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func signUp(email: String, password: String, role: String, name: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
             self.user = authResult?.user
+            self.username = name
             
             guard let uid = authResult?.user.uid else {
                 completion(.failure(NSError(domain: "SignUpError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user UID."])))
@@ -97,7 +100,7 @@ class UserSession: ObservableObject {
     func getUserInfo() -> UserInfo {
         var userInfo = UserInfo(id: "", name: "")
         if let user = self.user {
-            userInfo = UserInfo(id: user.uid, name: user.displayName ?? "User has no name")
+            userInfo = UserInfo(id: user.uid, name: username ?? "User has no name")
         }
         return userInfo
     }

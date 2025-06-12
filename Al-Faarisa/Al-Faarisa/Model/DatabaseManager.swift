@@ -2,8 +2,26 @@
 //  DatabaseManager.swift
 //  Al-Faarisa
 //
-//  Created by Amira Mahmedjan on 10.06.2025.
-//
+//  Created by Amira Mahmedjan using ChatGPT on 10.06.2025.
+//  Most methods except SignIn, SignOut, and SignUp were generated with help of chatGPT.
+//  The other three were taken from Firebase documentation
+//  The prompts are as follows:
+//  init(), fetchClubInfo(), saveClubInfo(): "Fetch club info struct from Firebase or save the default value if not present"
+
+//  saveEvent(): make a function that saves an Event struct {pasted Event} into a new collection in Firestore
+
+//  startListeningToAllEvents, stopListeningToAllEvents,listenToSingleEvent, stopListeningToSingleEvent:
+//  "make funcitons that listen to updates in the database within events collection (or a single event),
+//  and update the published var allEvents respectively. These functions will be called at each view that uses allEvents
+
+
+//  addAttendee, removeAttendee: make funcitons that remove and add an attendee to a single event specified by its UID in firestore.
+//  The attendees information are saved with {uid, name} type of struct.
+
+//  deleteEvent: make a function that deletes an entry in events collection with a given eventID.
+
+//  fetchAllEvents: make a function that fetches all entries in the events collection in Firestore and updates the allEvents
+//  published var respectively.
 
 import Foundation
 import Firebase

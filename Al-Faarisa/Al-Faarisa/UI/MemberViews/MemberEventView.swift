@@ -80,6 +80,19 @@ struct MemberEventView: View {
                                 .cornerRadius(20)
                                 .frame(maxWidth: .infinity)
                                 
+                                VStack {
+                                    Text("Attendees:")
+                                        .font(.headline)
+                                    ForEach(event.attendees) { attendee in
+                                        Text(attendee.name)
+                                            .font(.callout)
+                                    }
+                                }
+                                .padding(.horizontal)
+                                .background(.white)
+                                .cornerRadius(20)
+                                .frame(maxWidth: .infinity)
+                                
                                 
                                 if session.user != nil {
                                     if event.isSignedUp(session.getUserInfo()) {
@@ -107,7 +120,9 @@ struct MemberEventView: View {
                                             .opacity(0.5)
                                     } else {
                                         Button("Sign Up") {
-                                            db.addAttendee(to: eventID, user: session.getUserInfo())
+                                            withAnimation {
+                                                db.addAttendee(to: eventID, user: session.getUserInfo())
+                                            }
                                         }
                                         .buttonTextStyle()
                                     }
