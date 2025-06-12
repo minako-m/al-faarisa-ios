@@ -19,13 +19,18 @@ struct OrganizerMainView: View {
                 }
             OrganizerEventsView()
                 .tabItem {
-                    Image(systemName: "calendar")
+                    Image(systemName: "list.bullet.clipboard")
                     Text("Events")
                 }
             OrganizerAnalyticsView()
                 .tabItem {
                     Image(systemName: "chart.line.uptrend.xyaxis")
                     Text("Engagement")
+                }
+            CalendarEventView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("Calendar")
                 }
         }
         .tint(.black)

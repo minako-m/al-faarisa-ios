@@ -69,6 +69,7 @@ struct OrganizerEventsView: View {
                     .listRowSeparator(.hidden)
                     .listRowBackground(EmptyView())
                 }
+                .onDelete(perform: delete)
             }
             .listStyle(.plain)
             .navigationTitle("Club Events")
@@ -81,6 +82,13 @@ struct OrganizerEventsView: View {
         }
         .onAppear {
             dbManager.startListeningToAllEvents()
+        }
+    }
+    
+    func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let eventToDelete = events.sorted(by: { $0.date > $1.date })[index]
+            dbManager.deleteEvent(eventToDelete)
         }
     }
     

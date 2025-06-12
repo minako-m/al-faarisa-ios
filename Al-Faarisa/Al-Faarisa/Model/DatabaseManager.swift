@@ -17,8 +17,83 @@ class DatabaseManager: ObservableObject {
     private var singleEventListener: ListenerRegistration?
     
     @Published var allEvents: [Event] = []
+    @Published var clubInfo: ClubInfo
 
-    private init() {}
+    private init() {
+        self.clubInfo = ClubInfo(
+            name: "Al-Faarisa",
+            description: "Women's horse riding club in Astana. A community of strong, empowered women. With us, your life changes and feels brighter🌟",
+            addressName: "Recreational Area Ayaulym, Qoyandi, Astana, Kazakhstan",
+            instagramURL: "https://www.instagram.com/al_faarisa/"
+        )
+        
+        // Fetch or save to Firebase
+        let docRef = db.collection("clubInfo").document("main")
+        docRef.getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            if let document = snapshot, document.exists {
+                do {
+                    if let data = document.data() {
+                        self.clubInfo = try Firestore.Decoder().decode(ClubInfo.self, from: data)
+                    }
+                } catch {
+                    print("Failed to decode club info: \(error)")
+                }
+            } else {
+                // Doesn't exist — save default
+                do {
+                    let encoded = try Firestore.Encoder().encode(self.clubInfo)
+                    docRef.setData(encoded) { error in
+                        if let error = error {
+                            print("Failed to save default clubInfo: \(error)")
+                        }
+                    }
+                } catch {
+                    print("Failed to encode default clubInfo: \(error)")
+                }
+            }
+        }
+    }
+    
+    func fetchClubInfo() {
+        let docRef = db.collection("clubInfo").document("main")
+        docRef.getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            if let document = snapshot, document.exists {
+                do {
+                    if let data = document.data() {
+                        self.clubInfo = try Firestore.Decoder().decode(ClubInfo.self, from: data)
+                    }
+                } catch {
+                    print("Failed to decode club info: \(error)")
+                }
+            } else {
+                print(error ?? "No document")
+            }
+        }
+    }
+    
+    func saveClubInfo(_ newInfo: ClubInfo, completion: ((Error?) -> Void)? = nil) {
+        let docRef = db.collection("clubInfo").document("main")
+
+        do {
+            let encoded = try Firestore.Encoder().encode(newInfo)
+            docRef.setData(encoded) { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("Failed to save club info: \(error)")
+                    } else {
+                        self.clubInfo = newInfo
+                        print("Club info successfully saved.")
+                    }
+                    completion?(error)
+                }
+            }
+        } catch {
+            print("Encoding error while saving club info: \(error)")
+            completion?(error)
+        }
+    }
 
     func saveEvent(_ event: Event, completion: ((Error?) -> Void)? = nil) {
         let db = Firestore.firestore()
@@ -75,23 +150,38 @@ class DatabaseManager: ObservableObject {
     func addAttendee(to eventID: String, user: UserInfo, completion: ((Error?) -> Void)? = nil) {
         let eventRef = db.collection("events").document(eventID)
         
-        // Add user to attendees array using arrayUnion to avoid duplicates on Firestore side
         do {
             let userData = try Firestore.Encoder().encode(user)
             
             eventRef.updateData([
                 "attendees": FieldValue.arrayUnion([userData])
-            ]) { error in
+            ]) { [weak self] error in
                 if let error = error {
                     print("Failed to add attendee: \(error)")
+                    completion?(error)
+                    return
                 }
-                completion?(error)
+                
+                // Update local allEvents array to keep UI in sync
+                DispatchQueue.main.async {
+                    if let index = self?.allEvents.firstIndex(where: { $0.id == eventID }) {
+                        var updatedEvent = self!.allEvents[index]
+                        // Avoid duplicate in case UI already updated somehow
+                        if !updatedEvent.attendees.contains(user) {
+                            updatedEvent.attendees.append(user)
+                            self?.allEvents[index] = updatedEvent
+                        }
+                    }
+                }
+                
+                completion?(nil)
             }
         } catch {
             print("Encoding error adding attendee: \(error)")
             completion?(error)
         }
     }
+
     
     func removeAttendee(from eventID: String, user: UserInfo, completion: ((Error?) -> Void)? = nil) {
         let eventRef = db.collection("events").document(eventID)
@@ -151,6 +241,18 @@ class DatabaseManager: ObservableObject {
             DispatchQueue.main.async {
                 self.allEvents = events
             }
+        }
+    }
+    
+    func deleteEvent(_ event: Event, completion: ((Error?) -> Void)? = nil) {
+        db.collection("events").document(event.id).delete { error in
+            if let error = error {
+                print("Failed to delete event: \(error)")
+            } else {
+                // Update local state
+                self.allEvents.removeAll { $0.id == event.id }
+            }
+            completion?(error)
         }
     }
 }

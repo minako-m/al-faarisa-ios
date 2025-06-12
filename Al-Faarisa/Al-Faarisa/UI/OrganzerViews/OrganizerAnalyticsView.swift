@@ -30,12 +30,12 @@ enum TimeRange: CaseIterable {
 
 struct OrganizerAnalyticsView: View {
     @StateObject private var session = UserSession.shared
-    @State private var events: [Event] = []
+    @StateObject private var db = DatabaseManager.shared
     @State private var selectedRange: TimeRange = .lastMonth
     
     var filteredEvents: [Event] {
         let cutoff = Calendar.current.date(byAdding: .month, value: -selectedRange.monthsBack, to: Date()) ?? Date()
-        return events.filter { $0.date >= cutoff }
+        return db.allEvents.filter { $0.date >= cutoff }
     }
     
     var weeklyData: [WeeklyAttendance] {
@@ -69,6 +69,9 @@ struct OrganizerAnalyticsView: View {
             .aspectRatio(1, contentMode: .fit)
         }
         .padding()
+        .onAppear {
+            db.fetchAllEvents()
+        }
     }
 }
 //

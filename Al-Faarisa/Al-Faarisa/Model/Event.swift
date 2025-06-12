@@ -17,7 +17,8 @@ struct Event: Identifiable, Equatable, Codable {
                lhs.description == rhs.description &&
                lhs.date == rhs.date &&
                lhs.levels == rhs.levels &&
-               lhs.capacity == rhs.capacity
+               lhs.capacity == rhs.capacity &&
+               lhs.attendees == rhs.attendees
     }
     
     //@DocumentID var id: String?

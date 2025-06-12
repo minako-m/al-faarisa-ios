@@ -19,8 +19,13 @@ struct MemberMainView: View {
                 }
             MemberEventsView()
                 .tabItem {
-                    Image(systemName: "calendar")
+                    Image(systemName: "list.bullet.clipboard")
                     Text("Events")
+                }
+            CalendarEventView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("Calendar")
                 }
         }
         .tint(.black)

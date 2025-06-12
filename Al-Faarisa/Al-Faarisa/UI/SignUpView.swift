@@ -27,6 +27,7 @@ struct SignUpView: View {
     @State var password: String = ""
     @State var errorMessage: String = ""
     @State var role: UserRole = .member
+    @State var confirmationCode: String = ""
     
     var body: some View {
         VStack {
@@ -55,6 +56,16 @@ struct SignUpView: View {
             
             Divider()
             
+            if role == .organizer {
+                Text("Please enter your confirmation code that you should have received from another organizer:")
+                    .padding()
+                TextField("Confirmation Code", text: $confirmationCode)
+                    .autocapitalization(.allCharacters)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                Divider()
+            }
+            
             Button(action: {
                 signUp()
             }) {
@@ -73,6 +84,13 @@ struct SignUpView: View {
     }
     
     func signUp() {
+        if role == .organizer, confirmationCode != "ABCD" {
+            withAnimation {
+                errorMessage = "The organizer confirmation code is incorrect"
+            }
+            return
+        }
+        
         session.signUp(email: email, password: password, role: role.title) { result in
             switch result {
             case .success(()):

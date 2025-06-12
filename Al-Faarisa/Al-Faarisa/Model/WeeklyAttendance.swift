@@ -23,7 +23,7 @@ func groupEventsByWeek(events: [Event]) -> [WeeklyAttendance] {
     return grouped.map { (weekStart, events) in
         WeeklyAttendance(
             weekStart: weekStart,
-            totalAttendees: events.reduce(0) { $0 + $1.attendees.count }
+            totalAttendees: events.reduce(0) { $0 + $1.capacity }
         )
     }.sorted { $0.weekStart < $1.weekStart }
 }

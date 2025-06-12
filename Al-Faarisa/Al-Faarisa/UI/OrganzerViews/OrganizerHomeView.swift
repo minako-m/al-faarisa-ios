@@ -10,8 +10,16 @@ import MapKit
 
 
 struct OrganizerHomeView: View {
-    let bayterekCoordinate = CLLocationCoordinate2D(latitude: 51.1280, longitude: 71.4304)
+    let clubCoordinate = CLLocationCoordinate2D(latitude: 52.93592, longitude: 70.18895)
     @StateObject private var session = UserSession.shared
+    @StateObject private var db = DatabaseManager.shared
+    @State private var showEditor: Bool = false
+    @State private var newClubInfo = ClubInfo(
+        name: "Al-Faarisa",
+        description: "Women's horse riding club in Astana. A community of strong, empowered women. With us, your life changes and feels brighter🌟",
+        addressName: "Recreational Area Ayaulym, Qoyandi, Astana, Kazakhstan",
+        instagramURL: "https://www.instagram.com/al_faarisa/"
+    )
     
     var body: some View {
         GeometryReader { geometry in
@@ -29,12 +37,12 @@ struct OrganizerHomeView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         // Spacer to start content after the image
-                        Color.clear.frame(height: imageHeight - 50)
+                        Color.clear.frame(height: imageHeight - 30)
 
                         // Main Info
                         VStack (alignment: .leading, spacing: 20) {
                             HStack {
-                                Text("Al-Faarisa")
+                                Text(db.clubInfo.name)
                                     .titleTextStyle()
                                     .padding()
                                     .background(.white)
@@ -53,7 +61,7 @@ struct OrganizerHomeView: View {
                             VStack(alignment: .leading) {
                                 Text("Description")
                                     .font(.headline)
-                                Text("Women's horse riding club in Astana. A community of strong, empowered women. With us, your life changes and feels brighter🌟")
+                                Text(db.clubInfo.description)
                                     .font(.body)
                                     .foregroundColor(.gray)
                             }
@@ -64,11 +72,11 @@ struct OrganizerHomeView: View {
                             VStack(alignment: .leading) {
                                 Text("Address")
                                     .font(.headline)
-                                Text("Recreational Area Ayaulym, Qoyandi, Astana, Kazakhstan")
+                                Text(db.clubInfo.addressName)
                                     .font(.body)
                                     .foregroundColor(.gray)
                                 Map {
-                                    Marker("Horse Riding", coordinate: bayterekCoordinate)
+                                    Marker("Horse Riding", coordinate: clubCoordinate)
                                         .tint(.red)
                                 }
                                 .mapControlVisibility(.hidden)
@@ -79,6 +87,15 @@ struct OrganizerHomeView: View {
                             .background(.white)
                             .cornerRadius(20)
                             
+                            Button("Open in Apple Maps") {
+                                openAppleMaps()
+                            }
+                            .buttonTextStyle()
+                            .padding()
+                            
+                            if session.userRole == "Organizer" {
+                                editButton()
+                            }
                             signOutButton()
                         }
                         .background(.white)
@@ -90,6 +107,40 @@ struct OrganizerHomeView: View {
         }
     }
     
+    func editButton() -> some View {
+        Button(action: {
+            showEditor = true
+            newClubInfo = db.clubInfo
+        }) {
+            Label("Edit", systemImage: "square.and.pencil")
+                .font(.subheadline)
+                .padding(.horizontal)
+                .padding(.top)
+        }
+        .sheet(isPresented: $showEditor) {
+            NavigationStack {
+                ClubInfoEditor(clubInfo: $newClubInfo)
+                    .toolbar {
+                        Button("Cancel") {
+                            showEditor = false
+                        }
+                        Button("Save") {
+                            db.saveClubInfo(newClubInfo)
+                            db.fetchClubInfo()
+                            showEditor = false
+                        }
+                    }
+            }
+        }
+    }
+    
+    func openAppleMaps() {
+        let placemark = MKPlacemark(coordinate: clubCoordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "Zhety Qazyna Recreational Area"
+        mapItem.openInMaps(launchOptions: nil)
+    }
+        
     func signOutButton() -> some View {
         Button(action: {
             session.signOut()
@@ -102,7 +153,7 @@ struct OrganizerHomeView: View {
     }
     
     func openInstagram() {
-        if let url = URL(string: "https://www.instagram.com/al_faarisa/") {
+        if let url = URL(string: db.clubInfo.instagramURL) {
             UIApplication.shared.open(url)
         }
     }
