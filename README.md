@@ -5,9 +5,22 @@ This is a final project for CS 193P: iOS Application Development at Stanford Uni
 This iOS app supports two types of user accounts: **Club Organizer** and **Club Member**.  
 It uses Firebase for authentication and real-time data storage.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/IMG_1823.PNG" alt="Screenshot 1" width="250">
+  <img src="screenshots/IMG_1824.PNG" alt="Screenshot 2" width="250">
+  <img src="screenshots/IMG_1825.PNG" alt="Screenshot 3" width="250">
+</p>
+<p align="center">
+  <img src="screenshots/IMG_1826.PNG" alt="Screenshot 4" width="250">
+  <img src="screenshots/IMG_1827.PNG" alt="Screenshot 5" width="250">
+  <img src="screenshots/IMG_1828.PNG" alt="Screenshot 6" width="250">
+</p>
+
 ---
 
-## Sample Accounts
+## Testing app locally: Sample Accounts
 
 **Organizer Account**  
 Email: amiram@stanford.edu
